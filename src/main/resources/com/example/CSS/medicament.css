@@ -1,0 +1,65 @@
+/* Appliquer un fond dégradé */
+.root {
+    -fx-background-color: linear-gradient(to bottom, #FF512F, #DD2476);
+    -fx-padding: 20px;
+}
+
+/* Style du titre "Medicament" */
+.label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 10px;
+}
+
+/* Style du champ de texte */
+.text-field {
+    -fx-font-size: 14px;
+    -fx-padding: 8px;
+    -fx-background-radius: 5px;
+    -fx-border-color: #FFFFFF;
+    -fx-border-radius: 5px;
+    -fx-border-width: 1.5px;
+}
+
+/* Effet au survol du champ de texte */
+.text-field:hover {
+    -fx-background-color: #F5F5F5;
+}
+
+/* Effet au focus du champ de texte */
+.text-field:focused {
+    -fx-border-color: #FFD700;
+    -fx-border-width: 2px;
+}
+
+/* Style du bouton */
+.button {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #DD2476;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+    -fx-border-color: #FFFFFF;
+    -fx-border-width: 2px;
+    -fx-cursor: hand;
+}
+
+/* Effet au survol du bouton */
+.button:hover {
+    -fx-background-color: #FFD700;
+    -fx-text-fill: #000000;
+}
+
+/* Style du label d'affichage des résultats */
+#affiche {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-padding: 8px;
+    -fx-border-radius: 5px;
+    -fx-border-color: white;
+    -fx-border-width: 1px;
+}
