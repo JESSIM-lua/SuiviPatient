@@ -27,6 +27,24 @@
     -fx-background-color: #F5F5F5;
 }
 
+.table-view {
+    -fx-background-color: #e30505;
+    -fx-border-radius: 5px;
+    -fx-border-color: #000000;
+    -fx-border-width: 2px;
+}
+
+
+
+.table-row-cell {
+    -fx-background-color: #ea834a;
+    -fx-text-fill: #000000;
+}
+
+.table-row-cell:empty {
+    -fx-background-color: #ffffff;
+}
+
 /* Effet au focus du champ de texte */
 .text-field:focused {
     -fx-border-color: #FFD700;

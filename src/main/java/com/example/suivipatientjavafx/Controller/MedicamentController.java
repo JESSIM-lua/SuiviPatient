@@ -2,115 +2,402 @@ package com.example.suivipatientjavafx.Controller;
 
 import com.example.suivipatientjavafx.dao.MedicamentDAO;
 import com.example.suivipatientjavafx.model.Medicament;
+import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-// Use the JavaFX TextField here
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Stage;
+import javafx.util.converter.FloatStringConverter;
+import javafx.util.converter.IntegerStringConverter;
 
+import java.awt.event.MouseEvent;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class MedicamentController implements Initializable {
-    @FXML
-    private TextField medicamentFeld;  // JavaFX TextField
+public class MedicamentController extends Application implements Initializable, javafx.event.EventHandler<javafx.scene.input.MouseEvent> {
 
     @FXML
-    private Label affiche;
+    private TextField medicamentFeld;
 
     @FXML
     private ComboBox<String> comb;
 
-    private final MedicamentDAO medicamentDAO = new MedicamentDAO();
+    @FXML
+    public void getwSelected(MouseEvent event){
+        int index = tableView.getSelectionModel().getSelectedIndex();
+        if(index <= -1){
+            return;
+        }
+        editNom.setText(" "+tableView.getItems().get(index).getNom());
+    }
 
+
+
+
+    @FXML
+    private TableView<Medicament> tableView;
+
+    @FXML
+    private TextField editNom;
+
+    @FXML
+    private TextField editSubstance;
+
+
+    private final MedicamentDAO medicamentDAO = new MedicamentDAO();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        comboBox.setItems(FXCollections.observableArrayList("A", "B", "C"));
-        ObservableList<String> items = FXCollections.observableArrayList("Id", "Dose", "Population", "Complete");
+        ObservableList<String> options = FXCollections.observableArrayList("Id", "Dose", "Population", "Complete", "All");
+        comb.setItems(options);
+        TableColumn<Medicament, Integer> idColumn = new TableColumn<>("Id");
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        idColumn.setCellFactory(TextFieldTableCell.<Medicament, Integer>forTableColumn(new IntegerStringConverter()));
 
-        comb.setItems(items);
+
+        TableColumn<Medicament, String> nomColumn = new TableColumn<>("Nom");
+        nomColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        nomColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        nomColumn.setOnEditCommit(e -> {
+            e.getTableView().getItems().get(e.getTablePosition().getRow()).setNom(e.getNewValue());
+            medicamentDAO.updateMedicament(e.getTableView().getItems().get(e.getTablePosition().getRow()));
+        });
+
+
+
+
+        TableColumn<Medicament, String> substanceColumn = new TableColumn<>("Substance Active");
+        substanceColumn.setCellValueFactory(new PropertyValueFactory<>("substanceActive"));
+        substanceColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        TableColumn<Medicament, Float> doseMaxColumn = new TableColumn<>("Dose Maximale Journalière");
+        doseMaxColumn.setCellValueFactory(new PropertyValueFactory<>("doseMaxJournaliere"));
+
+        TableColumn<Medicament, Float> doseMortelleColumn = new TableColumn<>("Dose Mortelle");
+        doseMortelleColumn.setCellValueFactory(new PropertyValueFactory<>("doseMortelle"));
+
+        TableColumn<Medicament, String> popCiblesColumn = new TableColumn<>("Populations Cibles");
+        popCiblesColumn.setCellValueFactory(new PropertyValueFactory<>("populationsCibles"));
+
+        TableColumn<Medicament, String> popContreColumn = new TableColumn<>("Populations Contre-indiquées");
+        popContreColumn.setCellValueFactory(new PropertyValueFactory<>("populationsContreIndiquees"));
+
+        TableColumn<Medicament, String> frequenceColumn = new TableColumn<>("Fréquence Maximale");
+        frequenceColumn.setCellValueFactory(new PropertyValueFactory<>("frequenceMaximale"));
+
+        TableColumn<Medicament, Integer> dureeColumn = new TableColumn<>("Durée Maximale Traitement");
+        dureeColumn.setCellValueFactory(new PropertyValueFactory<>("dureeMaximaleTraitement"));
+
+        TableColumn<Medicament, String> effetsColumn = new TableColumn<>("Effets Secondaires");
+        effetsColumn.setCellValueFactory(new PropertyValueFactory<>("effetsSecondaires"));
+
+        TableColumn<Medicament, String> interactionsColumn = new TableColumn<>("Interactions");
+        interactionsColumn.setCellValueFactory(new PropertyValueFactory<>("interactions"));
+
+        TableColumn<Medicament, String> formeColumn = new TableColumn<>("Forme");
+        formeColumn.setCellValueFactory(new PropertyValueFactory<>("forme"));
+
+        TableColumn<Medicament, Integer> stockColumn = new TableColumn<>("Stock Disponible");
+        stockColumn.setCellValueFactory(new PropertyValueFactory<>("stockDisponible"));
+
+        TableColumn<Medicament, String> dateExpColumn = new TableColumn<>("Date Expiration");
+        dateExpColumn.setCellValueFactory(new PropertyValueFactory<>("dateExpiration"));
+
+        TableColumn<Medicament, Float> prixColumn = new TableColumn<>("Prix Unitaire");
+        prixColumn.setCellValueFactory(new PropertyValueFactory<>("prixUnitaire"));
+
+        TableColumn<Medicament, String> fournisseurColumn = new TableColumn<>("Fournisseur");
+        fournisseurColumn.setCellValueFactory(new PropertyValueFactory<>("fournisseur"));
+
+        tableView.getColumns().addAll(idColumn, nomColumn, substanceColumn, doseMaxColumn, doseMortelleColumn, popCiblesColumn,
+                popContreColumn, frequenceColumn, dureeColumn, effetsColumn, interactionsColumn, formeColumn, stockColumn,
+                dateExpColumn, prixColumn, fournisseurColumn);
+
+
+        displayAllMedications();
+        editData();
+
 
     }
 
-    @FXML
-    public void btnMedicament(ActionEvent actionEvent) {
-        String medicamentName = medicamentFeld.getText();
 
-        if (medicamentName.isEmpty()) {
-            System.out.println("Veuillez remplir tous les champs !");
+
+    /**
+     * Méthode appelée lors du clic sur le bouton (défini dans le FXML) pour lancer la recherche/filtrage.
+     * Selon l'option choisie, le TableView est mis à jour avec les données correspondantes.
+     */
+    @FXML
+    public void btnMedicament(ActionEvent event) {
+        String selectedOption = comb.getValue();
+
+        if (selectedOption == null) {
+            displayAllMedications();
             return;
         }
 
-        Medicament foundMedicament = medicamentDAO.getMedicamentByName(medicamentName);
-
-        String nom = foundMedicament.getNom();
-        int id = foundMedicament.getId();
-        String substanceActive = foundMedicament.getSubstanceActive();
-        float doseMaxJournaliere = foundMedicament.getDoseMaxJournaliere();
-        float doseMortelle = foundMedicament.getDoseMortelle();
-        String populationsCibles = foundMedicament.getPopulationsCibles();
-        String populationsContreIndiquees = foundMedicament.getPopulationsContreIndiquees();
-        String frequenceMaximale = foundMedicament.getFrequenceMaximale();
-        int dureeMaximaleTraitement = foundMedicament.getDureeMaximaleTraitement();
-        String effetsSecondaires = foundMedicament.getEffetsSecondaires();
-        String interactions = foundMedicament.getInteractions();
-        String forme = foundMedicament.getForme();
-        int stockDisponible = foundMedicament.getStockDisponible();
-        String dateExpiration = (foundMedicament.getDateExpiration() != null) ? foundMedicament.getDateExpiration().toString() : "Non disponible";
-        float prixUnitaire = foundMedicament.getPrixUnitaire();
-        String fournisseur = foundMedicament.getFournisseur();
-
-        String comboBoxValue = comb.getValue();
-        String sonId = "Id";
-
-        if (Objects.equals(comboBoxValue, sonId)) {
-            affiche.setText("Son id est : " + id);
-        }else if (comboBoxValue.equals("Dose")) {
-            affiche.setText("Sa dose est : " + doseMaxJournaliere);
-        }else if (comboBoxValue.equals("Population")){
-            affiche.setText("Sa population cible est : " + populationsCibles);
-        } else if (comboBoxValue.equals("Complete")){
-            affiche.setText("Informations du Médicament\n" + "Nom : " + nom + "\n" + "Substance Active : " + (substanceActive != null ? substanceActive : "Non spécifiée") + "\n" + "Dose Maximale Journalière : " + doseMaxJournaliere + " mg\n" +
-                        "Dose Mortelle : " + doseMortelle + " mg\n" +
-                        "Populations Cibles : " + populationsCibles + "\n" +
-                        "Populations Contre-indiquées : " + populationsContreIndiquees + "\n" +
-                        "Fréquence Maximale : " + (frequenceMaximale != null ? frequenceMaximale : "Non spécifiée") + "\n" +
-                        "Durée Maximale du Traitement : " + dureeMaximaleTraitement + " jours\n" +
-                        "Effets Secondaires : " + (effetsSecondaires != null ? effetsSecondaires : "Aucun signalé") + "\n" +
-                        "Interactions : " + (interactions != null ? interactions : "Non spécifiées") + "\n" +
-                        "Forme : " + (forme != null ? forme : "Non spécifiée") + "\n" +
-                        "Stock Disponible : " + stockDisponible + " unités\n" +
-                        "Date d'Expiration : " + dateExpiration + "\n" +
-                        "Prix Unitaire : " + prixUnitaire + " €\n" +
-                        "Fournisseur : " + (fournisseur != null ? fournisseur : "Non spécifié"));
+        if (selectedOption.equals("All")) {
+            displayAllMedications();
         } else {
-            affiche.setText("Veuillez choisir les informations que vous voulez voir");
+            String medicamentName = medicamentFeld.getText();
+            Medicament med = medicamentDAO.getMedicamentByName(medicamentName);
+
+            if (med == null) {
+                tableView.getColumns().clear();
+                tableView.setItems(FXCollections.observableArrayList());
+            } else {
+                updateTableForOption(selectedOption, med);
+            }
         }
+    }
+
+    /**
+     * Affiche tous les médicaments dans le TableView sous forme d'une vue "résumé"
+     * avec 5 colonnes : Id, Nom, Substance Active, Dose Maximale Journalière, Dose Mortelle.
+     */
+    private void displayAllMedications() {
+
+        TableColumn<Medicament, Integer> idColumn = new TableColumn<>("Id");
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        idColumn.setCellFactory(TextFieldTableCell.<Medicament, Integer>forTableColumn(new IntegerStringConverter()));
+
+
+        TableColumn<Medicament, String> nomColumn = new TableColumn<>("Nom");
+        nomColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        nomColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        nomColumn.setOnEditCommit(e -> {
+            e.getTableView().getItems().get(e.getTablePosition().getRow()).setNom(e.getNewValue());
+            medicamentDAO.updateMedicament(e.getTableView().getItems().get(e.getTablePosition().getRow()));
+        });
+
+
+        TableColumn<Medicament, String> substanceColumn = new TableColumn<>("Substance Active");
+        substanceColumn.setCellValueFactory(new PropertyValueFactory<>("substanceActive"));
+        substanceColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        TableColumn<Medicament, Float> doseMaxColumn = new TableColumn<>("Dose Maximale Journalière");
+        doseMaxColumn.setCellValueFactory(new PropertyValueFactory<>("doseMaxJournaliere"));
+
+        TableColumn<Medicament, Float> doseMortelleColumn = new TableColumn<>("Dose Mortelle");
+        doseMortelleColumn.setCellValueFactory(new PropertyValueFactory<>("doseMortelle"));
+
+        TableColumn<Medicament, String> popCiblesColumn = new TableColumn<>("Populations Cibles");
+        popCiblesColumn.setCellValueFactory(new PropertyValueFactory<>("populationsCibles"));
+
+        TableColumn<Medicament, String> popContreColumn = new TableColumn<>("Populations Contre-indiquées");
+        popContreColumn.setCellValueFactory(new PropertyValueFactory<>("populationsContreIndiquees"));
+
+        TableColumn<Medicament, String> frequenceColumn = new TableColumn<>("Fréquence Maximale");
+        frequenceColumn.setCellValueFactory(new PropertyValueFactory<>("frequenceMaximale"));
+
+        TableColumn<Medicament, Integer> dureeColumn = new TableColumn<>("Durée Maximale Traitement");
+        dureeColumn.setCellValueFactory(new PropertyValueFactory<>("dureeMaximaleTraitement"));
+
+        TableColumn<Medicament, String> effetsColumn = new TableColumn<>("Effets Secondaires");
+        effetsColumn.setCellValueFactory(new PropertyValueFactory<>("effetsSecondaires"));
+
+        TableColumn<Medicament, String> interactionsColumn = new TableColumn<>("Interactions");
+        interactionsColumn.setCellValueFactory(new PropertyValueFactory<>("interactions"));
+
+        TableColumn<Medicament, String> formeColumn = new TableColumn<>("Forme");
+        formeColumn.setCellValueFactory(new PropertyValueFactory<>("forme"));
+
+        TableColumn<Medicament, Integer> stockColumn = new TableColumn<>("Stock Disponible");
+        stockColumn.setCellValueFactory(new PropertyValueFactory<>("stockDisponible"));
+
+        TableColumn<Medicament, String> dateExpColumn = new TableColumn<>("Date Expiration");
+        dateExpColumn.setCellValueFactory(new PropertyValueFactory<>("dateExpiration"));
+
+        TableColumn<Medicament, Float> prixColumn = new TableColumn<>("Prix Unitaire");
+        prixColumn.setCellValueFactory(new PropertyValueFactory<>("prixUnitaire"));
+
+        TableColumn<Medicament, String> fournisseurColumn = new TableColumn<>("Fournisseur");
+        fournisseurColumn.setCellValueFactory(new PropertyValueFactory<>("fournisseur"));
+
+        tableView.getColumns().addAll(idColumn, nomColumn, substanceColumn, doseMaxColumn, doseMortelleColumn, popCiblesColumn,
+                popContreColumn, frequenceColumn, dureeColumn, effetsColumn, interactionsColumn, formeColumn, stockColumn,
+                dateExpColumn, prixColumn, fournisseurColumn);
+        ObservableList<Medicament> allMedications = medicamentDAO.getAllMedicaments();
+        tableView.setItems(allMedications);
+    }
+
+    /**
+     * Met à jour le TableView pour n'afficher que le médicament trouvé, avec
+     * des colonnes adaptées à l'option choisie.
+     *
+     * @param option L'option choisie dans la ComboBox ("Id", "Dose", "Population", "Complete").
+     * @param med    Le médicament trouvé correspondant au nom saisi.
+     */
+    private void updateTableForOption(String option, Medicament med) {
+        tableView.getColumns().clear();
+        ObservableList<Medicament> data = FXCollections.observableArrayList();
+        data.add(med);
+
+        switch (option) {
+            case "Id": {
+                TableColumn<Medicament, Integer> idColumn = new TableColumn<>("Id");
+                idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+                tableView.getColumns().add(idColumn);
+                break;
+            }
+            case "Dose": {
+                TableColumn<Medicament, Float> doseMaxColumn = new TableColumn<>("Dose Maximale Journalière");
+                doseMaxColumn.setCellValueFactory(new PropertyValueFactory<>("doseMaxJournaliere"));
+                doseMaxColumn.setCellFactory(TextFieldTableCell.forTableColumn(new FloatStringConverter()));
+                tableView.getColumns().add(doseMaxColumn);
+                break;
+            }
+            case "Population": {
+                TableColumn<Medicament, String> popColumn = new TableColumn<>("Population Cible");
+                popColumn.setCellValueFactory(new PropertyValueFactory<>("populationsCibles"));
+                tableView.getColumns().add(popColumn);
+                break;
+            }
+            case "Complete": {
+                TableColumn<Medicament, Integer> idColumn = new TableColumn<>("Id");
+                idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+                TableColumn<Medicament, String> nomColumn = new TableColumn<>("Nom");
+                nomColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
+
+                TableColumn<Medicament, String> substanceColumn = new TableColumn<>("Substance Active");
+                substanceColumn.setCellValueFactory(new PropertyValueFactory<>("substanceActive"));
+
+                TableColumn<Medicament, Float> doseMaxColumn = new TableColumn<>("Dose Maximale Journalière");
+                doseMaxColumn.setCellValueFactory(new PropertyValueFactory<>("doseMaxJournaliere"));
+
+                TableColumn<Medicament, Float> doseMortelleColumn = new TableColumn<>("Dose Mortelle");
+                doseMortelleColumn.setCellValueFactory(new PropertyValueFactory<>("doseMortelle"));
+
+                TableColumn<Medicament, String> popCiblesColumn = new TableColumn<>("Populations Cibles");
+                popCiblesColumn.setCellValueFactory(new PropertyValueFactory<>("populationsCibles"));
+
+                TableColumn<Medicament, String> popContreColumn = new TableColumn<>("Populations Contre-indiquées");
+                popContreColumn.setCellValueFactory(new PropertyValueFactory<>("populationsContreIndiquees"));
+
+                TableColumn<Medicament, String> frequenceColumn = new TableColumn<>("Fréquence Maximale");
+                frequenceColumn.setCellValueFactory(new PropertyValueFactory<>("frequenceMaximale"));
+
+                TableColumn<Medicament, Integer> dureeColumn = new TableColumn<>("Durée Maximale Traitement");
+                dureeColumn.setCellValueFactory(new PropertyValueFactory<>("dureeMaximaleTraitement"));
+
+                TableColumn<Medicament, String> effetsColumn = new TableColumn<>("Effets Secondaires");
+                effetsColumn.setCellValueFactory(new PropertyValueFactory<>("effetsSecondaires"));
+
+                TableColumn<Medicament, String> interactionsColumn = new TableColumn<>("Interactions");
+                interactionsColumn.setCellValueFactory(new PropertyValueFactory<>("interactions"));
+
+                TableColumn<Medicament, String> formeColumn = new TableColumn<>("Forme");
+                formeColumn.setCellValueFactory(new PropertyValueFactory<>("forme"));
+
+                TableColumn<Medicament, Integer> stockColumn = new TableColumn<>("Stock Disponible");
+                stockColumn.setCellValueFactory(new PropertyValueFactory<>("stockDisponible"));
+
+                TableColumn<Medicament, String> dateExpColumn = new TableColumn<>("Date Expiration");
+                dateExpColumn.setCellValueFactory(new PropertyValueFactory<>("dateExpiration"));
+
+                TableColumn<Medicament, Float> prixColumn = new TableColumn<>("Prix Unitaire");
+                prixColumn.setCellValueFactory(new PropertyValueFactory<>("prixUnitaire"));
+
+                TableColumn<Medicament, String> fournisseurColumn = new TableColumn<>("Fournisseur");
+                fournisseurColumn.setCellValueFactory(new PropertyValueFactory<>("fournisseur"));
+
+                tableView.getColumns().addAll(idColumn, nomColumn, substanceColumn, doseMaxColumn, doseMortelleColumn,
+                        popCiblesColumn, popContreColumn, frequenceColumn, dureeColumn, effetsColumn,
+                        interactionsColumn, formeColumn, stockColumn, dateExpColumn, prixColumn, fournisseurColumn);
+                break;
+            }
+            default:
+                break;
+        }
+        tableView.setItems(data);
+    }
+
+    public void editData(){
+        TableColumn<Medicament, Integer> idColumn = new TableColumn<>("Id");
+        idColumn.setCellFactory(TextFieldTableCell.<Medicament, Integer>forTableColumn(new IntegerStringConverter()));
 
 
 
-        // Affichage des informations
-//        affiche.setText("Informations du Médicament\n" + "Nom : " + nom + "\n" + "Substance Active : " + (substanceActive != null ? substanceActive : "Non spécifiée") + "\n" + "Dose Maximale Journalière : " + doseMaxJournaliere + " mg\n" +
-//                        "Dose Mortelle : " + doseMortelle + " mg\n" +
-//                        "Populations Cibles : " + populationsCibles + "\n" +
-//                        "Populations Contre-indiquées : " + populationsContreIndiquees + "\n" +
-//                        "Fréquence Maximale : " + (frequenceMaximale != null ? frequenceMaximale : "Non spécifiée") + "\n" +
-//                        "Durée Maximale du Traitement : " + dureeMaximaleTraitement + " jours\n" +
-//                        "Effets Secondaires : " + (effetsSecondaires != null ? effetsSecondaires : "Aucun signalé") + "\n" +
-//                        "Interactions : " + (interactions != null ? interactions : "Non spécifiées") + "\n" +
-//                        "Forme : " + (forme != null ? forme : "Non spécifiée") + "\n" +
-//                        "Stock Disponible : " + stockDisponible + " unités\n" +
-//                        "Date d'Expiration : " + dateExpiration + "\n" +
-//                        "Prix Unitaire : " + prixUnitaire + " €\n" +
-//                        "Fournisseur : " + (fournisseur != null ? fournisseur : "Non spécifié"));
 
-        System.out.println(foundMedicament);
-        System.out.println("hey");
+        TableColumn<Medicament, String> nomColumn = new TableColumn<>("Nom");
+        nomColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        TableColumn<Medicament, String> substanceColumn = new TableColumn<>("Substance Active");
+        substanceColumn.setCellValueFactory(new PropertyValueFactory<>("substanceActive"));
+
+
+        TableColumn<Medicament, Float> doseMaxColumn = new TableColumn<>("Dose Maximale Journalière");
+        doseMaxColumn.setCellValueFactory(new PropertyValueFactory<>("doseMaxJournaliere"));
+
+        TableColumn<Medicament, Float> doseMortelleColumn = new TableColumn<>("Dose Mortelle");
+        doseMortelleColumn.setCellValueFactory(new PropertyValueFactory<>("doseMortelle"));
+
+        TableColumn<Medicament, String> popCiblesColumn = new TableColumn<>("Populations Cibles");
+        popCiblesColumn.setCellValueFactory(new PropertyValueFactory<>("populationsCibles"));
+
+        TableColumn<Medicament, String> popContreColumn = new TableColumn<>("Populations Contre-indiquées");
+        popContreColumn.setCellValueFactory(new PropertyValueFactory<>("populationsContreIndiquees"));
+
+        TableColumn<Medicament, String> frequenceColumn = new TableColumn<>("Fréquence Maximale");
+        frequenceColumn.setCellValueFactory(new PropertyValueFactory<>("frequenceMaximale"));
+
+        TableColumn<Medicament, Integer> dureeColumn = new TableColumn<>("Durée Maximale Traitement");
+        dureeColumn.setCellValueFactory(new PropertyValueFactory<>("dureeMaximaleTraitement"));
+
+        TableColumn<Medicament, String> effetsColumn = new TableColumn<>("Effets Secondaires");
+        effetsColumn.setCellValueFactory(new PropertyValueFactory<>("effetsSecondaires"));
+
+        TableColumn<Medicament, String> interactionsColumn = new TableColumn<>("Interactions");
+        interactionsColumn.setCellValueFactory(new PropertyValueFactory<>("interactions"));
+
+        TableColumn<Medicament, String> formeColumn = new TableColumn<>("Forme");
+        formeColumn.setCellValueFactory(new PropertyValueFactory<>("forme"));
+
+        TableColumn<Medicament, Integer> stockColumn = new TableColumn<>("Stock Disponible");
+        stockColumn.setCellValueFactory(new PropertyValueFactory<>("stockDisponible"));
+
+        TableColumn<Medicament, String> dateExpColumn = new TableColumn<>("Date Expiration");
+        dateExpColumn.setCellValueFactory(new PropertyValueFactory<>("dateExpiration"));
+
+        TableColumn<Medicament, Float> prixColumn = new TableColumn<>("Prix Unitaire");
+        prixColumn.setCellValueFactory(new PropertyValueFactory<>("prixUnitaire"));
+
+        TableColumn<Medicament, String> fournisseurColumn = new TableColumn<>("Fournisseur");
+        fournisseurColumn.setCellValueFactory(new PropertyValueFactory<>("fournisseur"));
+
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/suivipatientjavafx/medicament.fxml"));
+        loader.setController(this);
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Suivi Patient - Médicaments");
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void handle(javafx.scene.input.MouseEvent mouseEvent) {
+
+        editNom.setText(" "+tableView.getItems().get(tableView.getSelectionModel().getSelectedIndex()).getNom());
+
     }
 }

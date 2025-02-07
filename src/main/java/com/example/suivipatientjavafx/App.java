@@ -15,12 +15,14 @@ import java.util.Objects;
 public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("dashboard.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("medicament.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 400, 400);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
     }
+
+
 
     public static void main(String[] args) {
         launch(args);
