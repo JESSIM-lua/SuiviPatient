@@ -282,6 +282,7 @@ public class MedicamentController extends Application implements Initializable, 
                 TableColumn<Medicament, String> popCiblesColumn = new TableColumn<>("Populations Cibles");
                 popCiblesColumn.setCellValueFactory(new PropertyValueFactory<>("populationsCibles"));
 
+
                 TableColumn<Medicament, String> popContreColumn = new TableColumn<>("Populations Contre-indiquées");
                 popContreColumn.setCellValueFactory(new PropertyValueFactory<>("populationsContreIndiquees"));
 
