@@ -1,21 +1,14 @@
 package com.example.suivipatientjavafx;
 
-import com.example.suivipatientjavafx.Controller.LoginController;
-import com.example.suivipatientjavafx.model.Medicament;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import com.example.suivipatientjavafx.util.HibernateSessionFactory;
-import java.util.Objects;
 
-public class App extends Application {
+public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("login.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("login.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), stage.getWidth(), stage.getHeight());
         stage.setTitle("Hello!");
         stage.setScene(scene);
