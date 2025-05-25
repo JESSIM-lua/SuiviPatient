@@ -13,7 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
         <junit.version>5.10.2</junit.version>
-        <javafx.version>17.0.6</javafx.version>
+        <javafx.version>21.0.2</javafx.version>
         <main.class>com.example.suivipatientjavafx.Main</main.class>
     </properties>
 
