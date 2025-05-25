@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Configuration de la base de données -->
+        <property name="hibernate.connection.driver_class">org.mariadb.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mariadb://localhost:30120/pp2</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">root</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MariaDBDialect</property>
+
+        <!-- Affichage des requêtes SQL dans les logs -->
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+
+        <!-- Mapping des entités -->
+        <mapping class="com.example.suivipatientjavafx.model.Medicament"/>
+        <mapping class="com.example.suivipatientjavafx.model.Patients"/>
+        <mapping class="com.example.suivipatientjavafx.model.Traitements"/>
+        <mapping class="com.example.suivipatientjavafx.model.Rendezvous"/>
+        <mapping class="com.example.suivipatientjavafx.model.Utilisateurs"/>
+    </session-factory>
+</hibernate-configuration>

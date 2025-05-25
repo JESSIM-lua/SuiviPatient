@@ -1,0 +1,51 @@
+/* Appliquer un fond dégradé */
+.root {
+    -fx-background-color: linear-gradient(to bottom, #2E3192, #1BFFFF);
+    -fx-padding: 20px;
+}
+
+/* Style du titre Dashboard */
+.label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 10px;
+}
+
+/* Centrage du titre */
+.label:first-of-type {
+    -fx-alignment: center;
+}
+
+/* Style de la ComboBox */
+.combo-box {
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+    -fx-background-color: white;
+    -fx-border-radius: 5px;
+    -fx-border-color: #FFFFFF;
+    -fx-border-width: 1.5px;
+}
+
+/* Effet au survol de la ComboBox */
+.combo-box:hover {
+    -fx-background-color: #F0F0F0;
+}
+
+/* Effet au clic */
+.combo-box:focused {
+    -fx-border-color: #FFD700;
+    -fx-border-width: 2px;
+}
+
+/* Style du Label */
+#label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-padding: 8px;
+    -fx-border-radius: 5px;
+    -fx-border-color: white;
+    -fx-border-width: 1px;
+}
