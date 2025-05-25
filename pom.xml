@@ -121,12 +121,12 @@
   <executions>
     <execution>
       <id>default-cli</id>
-      <configuration>
-        <mainClass>${main.class}</mainClass>
-      </configuration>
       <goals>
         <goal>run</goal>
       </goals>
+      <configuration>
+        <mainClass>${main.class}</mainClass>
+      </configuration>
     </execution>
     <execution>
       <id>build-image</id>
@@ -142,14 +142,11 @@
         <noHeaderFiles>true</noHeaderFiles>
         <noManPages>true</noManPages>
         <compress>2</compress>
-        <addModules>
-          javafx.controls,javafx.fxml,java.naming
-        </addModules>
+        <addExtraModules>java.naming</addExtraModules>
       </configuration>
     </execution>
   </executions>
 </plugin>
 
-        </plugins>
     </build>
 </project>
