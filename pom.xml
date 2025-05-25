@@ -113,7 +113,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Plugin JavaFX -->
+            <!-- Plugin JavaFX avec support JLINK -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -128,9 +128,24 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>build-image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jlink</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>${main.class}</mainClass>
+                            <launcher>SuiviPatient</launcher>
+                            <jlinkImageName>SuiviPatientApp</jlinkImageName>
+                            <stripDebug>true</stripDebug>
+                            <noHeaderFiles>true</noHeaderFiles>
+                            <noManPages>true</noManPages>
+                            <compress>2</compress>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
 </project>
-
