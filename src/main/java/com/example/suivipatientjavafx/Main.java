@@ -17,7 +17,12 @@ public class Main extends Application {
 
 
 
-    public static void main(String[] args) {
-        launch(args);
+    public static void main(Stage stage) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("login.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), stage.getWidth(), stage.getHeight());
+        stage.setTitle("Hello!");
+        stage.setScene(scene);
+        stage.show();
+
     }
 }
