@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -284,9 +283,11 @@ public class Medicament {
         return dateExpiration;
     }
 
+
     public void setDateExpiration(Date dateExpiration) {
         this.dateExpiration = dateExpiration;
     }
+
 
     public float getPrixUnitaire() {
         return prixUnitaire;

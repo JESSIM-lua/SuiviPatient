@@ -19,6 +19,17 @@ public class UtilisateursDAO {
         }
     }
 
+    public String getRoleByEmail(String email) {
+        try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
+            Query<String> query = session.createQuery("SELECT role FROM Utilisateurs WHERE email = :email", String.class);
+            query.setParameter("email", email);
+            return query.uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public boolean validateLogin(String email, String motDePasse) {
         Utilisateurs user = getUserByEmail(email);
         if (user != null) {

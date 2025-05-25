@@ -16,7 +16,9 @@
 
         <!-- Mapping des entités -->
         <mapping class="com.example.suivipatientjavafx.model.Medicament"/>
-
+        <mapping class="com.example.suivipatientjavafx.model.Patients"/>
+        <mapping class="com.example.suivipatientjavafx.model.Traitements"/>
+        <mapping class="com.example.suivipatientjavafx.model.Rendezvous"/>
         <mapping class="com.example.suivipatientjavafx.model.Utilisateurs"/>
     </session-factory>
 </hibernate-configuration>

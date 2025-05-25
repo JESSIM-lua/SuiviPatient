@@ -38,12 +38,16 @@ public class LoginController {
 
         boolean isValid = utilisateursDAO.validateLogin(email, password);
 
-        if (isValid) {
+        if (isValid && utilisateursDAO.getRoleByEmail(email).equals("medecin")) {
             errorLabel.setText("Connexion réussie !");
             loadDashboard(event);
+        } else if (isValid && utilisateursDAO.getRoleByEmail(email).equals("secretaire")) {
+            errorLabel.setText("Connexion réussie !");
+            loadSec(event);
+
         } else {
             errorLabel.setText("Identifiants incorrects !");
-            loadDashboard(event);
+
         }
     }
 
@@ -61,6 +65,21 @@ public class LoginController {
             e.printStackTrace();
         }
     }
+    public void loadSec(ActionEvent event) {
+        try {
+            String fxmlPath = "/com/example/suivipatientjavafx/dashboardSecretaire.fxml";
+            FXMLLoader fxmlLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(fxmlPath)));
+
+            Parent root = fxmlLoader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @FXML
     public void goToRegister(ActionEvent event) {

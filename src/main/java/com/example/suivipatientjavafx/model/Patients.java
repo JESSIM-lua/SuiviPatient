@@ -2,9 +2,10 @@ package com.example.suivipatientjavafx.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
-@Table(name = "patients")
+@Table(name = "Patients")
 public class Patients {
 
     @Id
@@ -31,10 +32,12 @@ public class Patients {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateEnregistrement;
 
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Traitements> traitements;
+
     // Constructeurs
 
     public Patients() {
-        // Initialisation de la date d'enregistrement à la date actuelle
         this.dateEnregistrement = new Date();
     }
 
@@ -45,6 +48,16 @@ public class Patients {
         this.telephone = telephone;
         this.email = email;
         this.dateEnregistrement = new Date(); // Date d'enregistrement automatique
+    }
+
+    public Patients(int id, String nom, String prenom, Date dateNaissance, String telephone, String email, Date dateEnregistrement) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.dateNaissance = dateNaissance;
+        this.telephone = telephone;
+        this.email = email;
+        this.dateEnregistrement = dateEnregistrement;
     }
 
     // Getters et Setters
@@ -103,6 +116,14 @@ public class Patients {
 
     public void setDateEnregistrement(Date dateEnregistrement) {
         this.dateEnregistrement = dateEnregistrement;
+    }
+
+    public List<Traitements> getTraitements() {
+        return traitements;
+    }
+
+    public void setTraitements(List<Traitements> traitements) {
+        this.traitements = traitements;
     }
 
     // Méthode `toString()` pour affichage des informations du patient

@@ -15,8 +15,8 @@ import java.util.Objects;
 public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("medicament.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 400, 400);
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("login.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), stage.getWidth(), stage.getHeight());
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
