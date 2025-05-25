@@ -17,4 +17,6 @@ module com.example.suivipatientjavafx {
     opens com.example.suivipatientjavafx.dao to org.hibernate.orm.core;
     opens com.example.suivipatientjavafx.util to org.hibernate.orm.core;
     exports com.example.suivipatientjavafx;
+
+
 }
