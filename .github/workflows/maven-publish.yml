@@ -1,0 +1,30 @@
+name: Build JAR
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cloner le dépôt
+        uses: actions/checkout@v3
+
+      - name: Installer Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Compiler et créer le JAR
+        run: mvn clean package
+
+      - name: Sauvegarder le JAR en artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: mon-jar
+          path: target/*.jar
