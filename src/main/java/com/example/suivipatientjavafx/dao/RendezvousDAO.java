@@ -18,4 +18,15 @@ public class RendezvousDAO {
             return null;
         }
     }
+
+    public static ObservableList<Rendezvous> getByEtat(String etat) {
+        try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
+            Query<Rendezvous> query = session.createQuery("FROM Rendezvous WHERE etat = :etat", Rendezvous.class);
+            query.setParameter("etat", etat);
+            return FXCollections.observableArrayList(query.list());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

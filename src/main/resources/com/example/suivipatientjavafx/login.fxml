@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" prefHeight="218.0" prefWidth="314.0" spacing="10" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.suivipatientjavafx.Controller.LoginController">
+<VBox alignment="CENTER" prefHeight="218.0" prefWidth="314.0" spacing="10" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.suivipatientjavafx.Controller.LoginController">
 
     <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Connexion" />
 
@@ -14,5 +14,5 @@
 
     <Label fx:id="errorLabel" textFill="red" />
 
-    <Button onAction="#goToRegister" text="Créer un compte" />
+    <Button onAction="#goToRegister" text="Créer un Compte" />
 </VBox>

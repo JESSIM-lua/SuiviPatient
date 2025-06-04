@@ -132,7 +132,7 @@ public class PatientsController extends Application implements Initializable {
 
     private void displayAllMedications() {
         ObservableList<Patients> allMedications = patientsDAO.getAllPatients();
-        patientsTableView   .setItems(allMedications);
+        patientsTableView.setItems(allMedications);
     }
 
     @FXML
@@ -154,7 +154,6 @@ public class PatientsController extends Application implements Initializable {
                 patientsTableView.getColumns().clear();
                 patientsTableView.setItems(FXCollections.observableArrayList());
             } else {
-
                 updateTableForOption(selectedOption, med);
 
             }

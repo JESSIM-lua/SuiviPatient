@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="450.0" prefWidth="1207.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.suivipatientjavafx.Controller.RendezVous">
+    <children>
+        <Label layoutX="20.0" layoutY="20.0" text="Liste des rendez-vous" />
+        <TableView fx:id="tableViewRendezVous" layoutX="11.0" layoutY="80.0" prefHeight="255.0" prefWidth="1213.0">
+            <columns>
+                <TableColumn fx:id="colId" prefWidth="200.0" text="ID du RDV" />
+                <TableColumn fx:id="colPatientId" prefWidth="200.0" text="ID du Patient" />
+                <TableColumn fx:id="colPatientName" prefWidth="200.0" text="Nom Prénom" />
+<!--                <TableColumn fx:id="colUtilisateurId" prefWidth="200.0" text="Date du Rendez-vous" />-->
+                <TableColumn fx:id="colDateRendezvous" prefWidth="200.0" text="Date du Rendez-vous" />
+                <TableColumn fx:id="colMotif" prefWidth="200.0" text="Motif" />
+                <TableColumn fx:id="colEtat" prefWidth="200.0" text="Etat" />
+                <TableColumn fx:id="colDateCreation" prefWidth="200.0" text="Date de Création" />
+
+            </columns>
+        </TableView>
+      <Button fx:id="DeleteBtn" layoutX="239.0" layoutY="376.0" mnemonicParsing="false" text="Supprimer cette ligne" />
+      <Button fx:id="AddBtn" layoutX="458.0" layoutY="376.0" mnemonicParsing="false" text="Ajouter" />
+      <ComboBox fx:id="ComboState" layoutX="438.0" layoutY="29.0" prefWidth="150.0" />
+      <Button fx:id="SearchState" onAction="#searchState" layoutX="612.0" layoutY="29.0" mnemonicParsing="false" text="Chercher" />
+    </children>
+</AnchorPane>

@@ -137,4 +137,8 @@ public class Patients {
                 ", Email=" + (email != null ? email : "Non renseigné") +
                 ", Date d'enregistrement=" + dateEnregistrement + "]";
     }
+
+    public int getPatient_id() {
+        return id;
+    }
 }
