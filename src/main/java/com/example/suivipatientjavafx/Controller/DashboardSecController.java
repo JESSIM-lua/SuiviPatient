@@ -29,7 +29,7 @@ public class DashboardSecController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 //        comboBox.setItems(FXCollections.observableArrayList("A", "B", "C"));
-        ObservableList<String> items = FXCollections.observableArrayList("Rendez-Vous", "Patients");
+        ObservableList<String> items = FXCollections.observableArrayList("rendezVous", "Patients");
 
         comb.setItems(items);
 

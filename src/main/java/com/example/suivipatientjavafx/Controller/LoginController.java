@@ -1,6 +1,7 @@
 package com.example.suivipatientjavafx.Controller;
 
 import com.example.suivipatientjavafx.dao.UtilisateursDAO;
+import com.example.suivipatientjavafx.util.Session;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -49,6 +50,8 @@ public class LoginController {
             errorLabel.setText("Identifiants incorrects !");
 
         }
+
+        Session.setCurrentUser(utilisateursDAO.getUserByEmail(email));
     }
 
     public void loadDashboard(ActionEvent event) {

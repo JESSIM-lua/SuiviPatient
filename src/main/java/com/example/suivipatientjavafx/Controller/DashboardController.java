@@ -31,7 +31,7 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 //        comboBox.setItems(FXCollections.observableArrayList("A", "B", "C"));
-        ObservableList<String> items = FXCollections.observableArrayList("Rendez-Vous", "Patients", "medicament");
+        ObservableList<String> items = FXCollections.observableArrayList("rendezVous", "Patients", "medicament");
 
         comb.setItems(items);
 

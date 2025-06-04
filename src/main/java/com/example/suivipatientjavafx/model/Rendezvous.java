@@ -1,13 +1,13 @@
 package com.example.suivipatientjavafx.model;
 
 
-import org.hibernate.boot.registry.selector.spi.StrategyCreator;
+import com.example.suivipatientjavafx.Controller.RendezVousController;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "Rendezvous")
-public class Rendezvous {
+public class Rendezvous extends RendezVousController {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

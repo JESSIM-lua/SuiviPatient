@@ -2,11 +2,21 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
 
-<VBox alignment="CENTER" prefHeight="218.0" prefWidth="314.0" spacing="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.suivipatientjavafx.Controller.DashboardController" stylesheets="@../CSS/dashboard.css">
+<AnchorPane xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.suivipatientjavafx.Controller.DashboardController"
+            stylesheets="@../CSS/dashboard.css">
    <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" text="Dashboard" textAlignment="RIGHT" textOverrun="CENTER_ELLIPSIS"/>
-      <ComboBox fx:id="comb" onAction="#selectItem" prefWidth="150.0"/>
-      <Label fx:id="label" text="Label"/>
+      <VBox alignment="CENTER" spacing="20" prefWidth="400"
+            AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+
+         <Label text="Dashboard" fx:id="titleLabel" />
+         <ComboBox fx:id="comb" onAction="#selectItem" prefWidth="200.0" />
+         <Label fx:id="label" text="Label" />
+
+      </VBox>
    </children>
-</VBox>
+</AnchorPane>

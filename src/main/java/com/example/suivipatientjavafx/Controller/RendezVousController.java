@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class RendezVous implements Initializable {
+public class RendezVousController implements Initializable {
 
     @FXML
     private TableView<Rendezvous> tableViewRendezVous;
@@ -120,8 +120,54 @@ public class RendezVous implements Initializable {
 
 //        colUtilisateurId.setCellValueFactory(new PropertyValueFactory<>("utilisateur_id"));
         colDateRendezvous.setCellValueFactory(new PropertyValueFactory<>("date_rendezvous"));
+        colDateRendezvous.setCellFactory(column -> {
+            TableCell<Rendezvous, String> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        setText(item);
+                    }
+                }
+            };
+            return cell;
+        });
         colMotif.setCellValueFactory(new PropertyValueFactory<>("motif"));
         colEtat.setCellValueFactory(new PropertyValueFactory<>("etat"));
+        colEtat.setCellFactory(column -> {
+            TableCell<Rendezvous, String> cell = new TableCell<>() {
+                private final ComboBox<String> comboBox = new ComboBox<>();
+
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        comboBox.getItems().setAll("planifié", "annulé", "effectué");
+                        comboBox.setValue(item);
+                        comboBox.setOnAction(event -> {
+                            String newValue = comboBox.getValue();
+                            Rendezvous rendezvous = getTableView().getItems().get(getIndex());
+                            rendezvous.setEtat(newValue);
+
+                            try (Session session = new Configuration().configure().buildSessionFactory().openSession()) {
+                                session.beginTransaction();
+                                session.update(rendezvous);
+                                session.getTransaction().commit();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        setGraphic(comboBox);
+                    }
+                }
+            };
+            return cell;
+        });
         colDateCreation.setCellValueFactory(new PropertyValueFactory<>("date_creation"));
         colMotif.setEditable(true);
 

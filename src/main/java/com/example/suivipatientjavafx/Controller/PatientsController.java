@@ -1,13 +1,12 @@
 package com.example.suivipatientjavafx.Controller;
 
-import com.example.suivipatientjavafx.dao.MedicamentDAO;
 import com.example.suivipatientjavafx.dao.PatientsDAO;
 import com.example.suivipatientjavafx.dao.TraitementsDAO;
-import com.example.suivipatientjavafx.model.Medicament;
 import com.example.suivipatientjavafx.model.Patients;
+import com.example.suivipatientjavafx.model.Rendezvous;
 import com.example.suivipatientjavafx.model.Traitements;
+import com.example.suivipatientjavafx.util.Session;
 import javafx.application.Application;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,16 +23,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import javafx.util.converter.FloatStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
-import javax.persistence.Table;
 import java.net.URL;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class PatientsController extends Application implements Initializable {
@@ -52,6 +47,9 @@ public class PatientsController extends Application implements Initializable {
     @FXML
     private TableView<Traitements> traitementsTableView;
 
+    @FXML
+    private TableView<Rendezvous> rendezVousTableView;
+
     private final PatientsDAO patientsDAO = new PatientsDAO();
     private final TraitementsDAO traitementsDAO = new TraitementsDAO();
 
@@ -62,7 +60,8 @@ public class PatientsController extends Application implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         patientsTableView.setEditable(true);
-        traitementsTableView.setEditable(false); // Les traitements ne seront pas modifiables
+        traitementsTableView.setEditable(false);
+        rendezVousTableView.setEditable(true);
         ObservableList<String> options = FXCollections.observableArrayList("Complete", "All");
         comb.setItems(options);
 
@@ -88,16 +87,57 @@ public class PatientsController extends Application implements Initializable {
         patientsTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 displayTraitementsForPatient(newSelection.getId());
+                displayRendezVousForPatient(newSelection.getId());
             }
         });
 
         setupTraitementsTable();
+        setupRendezVousTable();
     }
 
     private void displayTraitementsForPatient(int patientId) {
         List<Traitements> traitementsList = traitementsDAO.getPatientTraitement(patientId);
         ObservableList<Traitements> traitementsData = FXCollections.observableArrayList(traitementsList);
         traitementsTableView.setItems(traitementsData);
+    }
+
+    private void displayRendezVousForPatient(int patientId) {
+        Rendezvous rendezVous = patientsDAO.getPatientRendezVous(patientId);
+        ObservableList<Rendezvous> rendezVousData = FXCollections.observableArrayList();
+        if (rendezVous != null) {
+            rendezVousData.add(rendezVous);
+        }
+        rendezVousTableView.setItems(rendezVousData);
+    }
+
+    private void setupRendezVousTable() {
+        rendezVousTableView.getColumns().clear();
+
+        TableColumn<Rendezvous, Integer> idColumn = new TableColumn<>("Id");
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<Rendezvous, Integer> patientIdColumn = new TableColumn<>("Patient Id");
+        patientIdColumn.setCellValueFactory(new PropertyValueFactory<>("patient_id"));
+
+        TableColumn<Rendezvous, Integer> utilisateurIdColumn = new TableColumn<>("Utilisateur Id");
+        utilisateurIdColumn.setCellValueFactory(new PropertyValueFactory<>("utilisateur_id"));
+
+        TableColumn<Rendezvous, String> dateRendezvousColumn = new TableColumn<>("Date Rendez-vous");
+        dateRendezvousColumn.setCellValueFactory(new PropertyValueFactory<>("date_rendezvous"));
+
+        TableColumn<Rendezvous, String> motifColumn = new TableColumn<>("Motif");
+        motifColumn.setCellValueFactory(new PropertyValueFactory<>("motif"));
+
+        TableColumn<Rendezvous, String> etatColumn = new TableColumn<>("État");
+        etatColumn.setCellValueFactory(new PropertyValueFactory<>("etat"));
+
+        TableColumn<Rendezvous, String> dateCreationColumn = new TableColumn<>("Date Création");
+        dateCreationColumn.setCellValueFactory(new PropertyValueFactory<>("date_creation"));
+
+        rendezVousTableView.getColumns().addAll(
+                idColumn, patientIdColumn, utilisateurIdColumn, dateRendezvousColumn,
+                motifColumn, etatColumn, dateCreationColumn
+        );
     }
 
 
@@ -274,5 +314,83 @@ public class PatientsController extends Application implements Initializable {
         launch();
     }
 
+    @FXML
+    private void handleAddPatient(ActionEvent event) {
+        Patients newPatient = new Patients();
+        newPatient.setNom("Nouveau");
+        newPatient.setPrenom("Patient");
+        newPatient.setEmail("email@example.com");
+        newPatient.setTelephone("0000000000");
+        newPatient.setDateNaissance(new Date());
+
+        patientsDAO.savePatient(newPatient);
+        patientsTableView.getItems().add(newPatient);
+    }
+
+    @FXML
+    private void handleAddRendezVous(ActionEvent event) {
+        Patients selectedPatient = patientsTableView.getSelectionModel().getSelectedItem();
+        if (selectedPatient == null) return;
+
+        Rendezvous rdv = new Rendezvous();
+        rdv.setPatient_id(selectedPatient.getId());
+        rdv.setUtilisateur_id(Session.getCurrentUserId());
+        rdv.setDate_rendezvous("2025-06-05");
+        rdv.setMotif("Consultation");
+        rdv.setEtat("Prévu");
+        rdv.setDate_creation(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+
+        patientsDAO.saveRendezVous(rdv);
+        rendezVousTableView.getItems().add(rdv);
+    }
+
+    @FXML
+    private void handleAddTraitement(ActionEvent event) {
+        Patients selectedPatient = patientsTableView.getSelectionModel().getSelectedItem();
+        if (selectedPatient == null) return;
+
+        Traitements t = new Traitements();
+        t.setPatient_id(selectedPatient.getId());
+        t.setMedicament_id(1); // ← assure-toi que cet ID existe dans ta BDD
+        t.setDosage("500mg");
+        t.setDuree_jours(5);
+        t.setFrequence("1x/jour");
+        t.setDate_debut("2025-06-04");
+        t.setDate_fin("2025-06-09");
+        t.setRecommandations("À prendre le soir");
+
+        traitementsDAO.saveTraitement(t);
+        traitementsTableView.getItems().add(t);
+    }
+
+
+
+
+    @FXML
+    private void handleBackToDashboard(ActionEvent event) {
+        try {
+            String role = Session.getCurrentUserRole(); // Méthode à créer (voir ci-dessous)
+            String fxml;
+
+            switch (role) {
+                case "secretaire":
+                    fxml = "/com/example/suivipatientjavafx/dashboardSecretaire.fxml";
+                    break;
+                case "admin":
+                case "medecin":
+                    fxml = "/com/example/suivipatientjavafx/dashboard.fxml";
+                    break;
+                default:
+                    throw new IllegalArgumentException("Rôle inconnu : " + role);
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            Parent root = loader.load();
+            Stage stage = (Stage) rendezVousTableView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

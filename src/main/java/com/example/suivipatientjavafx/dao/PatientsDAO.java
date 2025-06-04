@@ -93,4 +93,14 @@ public class PatientsDAO {
             e.printStackTrace();
         }
     }
+
+    public void saveRendezVous(Rendezvous rdv) {
+        try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            session.saveOrUpdate(rdv);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

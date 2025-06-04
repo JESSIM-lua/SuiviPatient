@@ -49,6 +49,14 @@ public class TraitementsDAO {
     }
 
 
-
-
+    public void saveTraitement(Traitements traitement) {
+        try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            session.saveOrUpdate(traitement);
+            session.getTransaction().commit();
+            System.out.println("Ajout traitement : " + traitement.getId() + " réussi");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
