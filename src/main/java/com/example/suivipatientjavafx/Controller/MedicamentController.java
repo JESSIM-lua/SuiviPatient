@@ -2,6 +2,7 @@ package com.example.suivipatientjavafx.Controller;
 
 import com.example.suivipatientjavafx.dao.MedicamentDAO;
 import com.example.suivipatientjavafx.model.Medicament;
+import com.example.suivipatientjavafx.util.Session;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -507,5 +508,32 @@ public class MedicamentController extends Application implements Initializable, 
     @Override
     public void handle(javafx.scene.input.MouseEvent mouseEvent) {
         editNom.setText(" " + tableView.getItems().get(tableView.getSelectionModel().getSelectedIndex()).getNom());
+    }
+
+    @FXML
+    private void handleBackToDashboard(ActionEvent event) {
+        try {
+            String role = Session.getCurrentUserRole(); // Méthode à créer (voir ci-dessous)
+            String fxml;
+
+            switch (role) {
+                case "secretaire":
+                    fxml = "/com/example/suivipatientjavafx/dashboardSecretaire.fxml";
+                    break;
+                case "admin":
+                case "medecin":
+                    fxml = "/com/example/suivipatientjavafx/dashboard.fxml";
+                    break;
+                default:
+                    throw new IllegalArgumentException("Rôle inconnu : " + role);
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            Parent root = loader.load();
+            Stage stage = (Stage) tableView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

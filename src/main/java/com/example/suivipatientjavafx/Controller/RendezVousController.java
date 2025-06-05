@@ -8,10 +8,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Stage;
 import javafx.util.converter.DefaultStringConverter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -229,6 +233,33 @@ public class RendezVousController implements Initializable {
     @FXML
     private void addRendezVous(ActionEvent event) {
 
+    }
+
+    @FXML
+    private void handleBackToDashboard(ActionEvent event) {
+        try {
+            String role = com.example.suivipatientjavafx.util.Session.getCurrentUserRole(); // Méthode à créer (voir ci-dessous)
+            String fxml;
+
+            switch (role) {
+                case "secretaire":
+                    fxml = "/com/example/suivipatientjavafx/dashboardSecretaire.fxml";
+                    break;
+                case "admin":
+                case "medecin":
+                    fxml = "/com/example/suivipatientjavafx/dashboard.fxml";
+                    break;
+                default:
+                    throw new IllegalArgumentException("Rôle inconnu : " + role);
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            Parent root = loader.load();
+            Stage stage = (Stage) tableViewRendezVous.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

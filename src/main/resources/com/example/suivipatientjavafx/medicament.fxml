@@ -5,7 +5,9 @@
 <?import javafx.scene.layout.*?>
 
 <VBox alignment="CENTER" spacing="10" stylesheets="@../CSS/medicament.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.suivipatientjavafx.Controller.MedicamentController">
-
+    <HBox spacing="10" alignment="CENTER_LEFT" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+        <Button text="🏠 Retour Dashboard" onAction="#handleBackToDashboard" />
+    </HBox>
     <Label text="Medicament" />
     <ComboBox fx:id="comb" prefWidth="150.0" />
     <TextField fx:id="medicamentFeld" promptText="Medicament" />
